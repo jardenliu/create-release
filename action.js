@@ -17,7 +17,7 @@ const main = async () => {
     .split(" ")
     .map(asset => asset.split(":"));
   console.log(assets)
-  console.log(core..getInput("assets"))
+  console.log(core.getInput("assets"))
   if (recreate) {
     await deleteReleaseIfExists(code);
   }
