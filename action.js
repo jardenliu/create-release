@@ -18,6 +18,7 @@ const main = async () => {
     .map(asset => asset.split(":"));
   console.log(assets)
   console.log(core.getInput("assets"))
+  console.log(github.context.sha)
   if (recreate) {
     await deleteReleaseIfExists(code);
   }
@@ -57,6 +58,8 @@ async function deleteReleaseIfExists(code) {
     console.log(err);
     console.log("Release not found.. moving to creation");
   }
+  console.log(release)
+  
   if (!release) {
     return;
   }
