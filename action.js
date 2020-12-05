@@ -4,7 +4,8 @@ require('child_process').execSync('npm install @actions/core @actions/github', {
 const fs = require('fs')
 const core = require('@actions/core')
 const github = require('@actions/github')
-const api = new github.GitHub(core.getInput('token'))
+// const api = new github.GitHub(core.getInput('token'))
+const api = github.getOctokit(core.getInput('token'))
 
 const getReleaseByTag = async (tag) => {
   let release
