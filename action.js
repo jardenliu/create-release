@@ -55,23 +55,22 @@ const main = async () => {
       draft: false,
       prerelease: prerelease,
     })
-    console.log(
-      '🚀 ~ file: action.js ~ line 57 ~ main ~ createRelease',
-      createRelease.status
-    )
+
     release = createRelease.data
   }
 
   for (const [source, target, type] of assets) {
     const data = fs.readFileSync(source)
+
     api.repos.uploadReleaseAsset({
-      url: release.upload_url,
+      ...github.context.repo,
+      release_id: release.id,
       headers: {
         ['content-type']: type,
         ['content-length']: data.length,
       },
       name: target,
-      file: data,
+      data: data,
     })
   }
 }
@@ -91,10 +90,7 @@ async function deleteReleaseIfExists(code, release) {
       ...github.context.repo,
       ref: `tags/${code}`,
     })
-    console.log(
-      '🚀 ~ file: action.js ~ line 93 ~ deleteTagRef ~ delTag',
-      delTag.status
-    )
+
     return delTag
   }
 
