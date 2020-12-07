@@ -60,6 +60,8 @@ const main = async () => {
   }
 
   for (const [source, target, type] of assets) {
+    console.log('🚀 ~ file: action.js ~ line 63 ~ main ~ target', target)
+    console.log('🚀 ~ file: action.js ~ line 63 ~ main ~ source', source)
     const data = fs.readFileSync(source)
 
     api.repos.uploadReleaseAsset({
