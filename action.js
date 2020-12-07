@@ -1,11 +1,9 @@
-require('child_process').execSync('npm install @actions/core @actions/github', {
-  cwd: __dirname,
-})
 const fs = require('fs')
 const core = require('@actions/core')
 const github = require('@actions/github')
 // const api = new github.GitHub(core.getInput('token'))
 const api = github.getOctokit(core.getInput('token'))
+console.log('🚀 ~ file: action.js ~ line 6 ~ api', Object.keys(api))
 
 const getReleaseByTag = async (tag) => {
   let release
@@ -26,6 +24,7 @@ const main = async () => {
   const code = core.getInput('code')
   const body = core.getInput('body')
   const hash = core.getInput('hash')
+
   const prerelease = core.getInput('prerelease') == 'true'
   const recreate = core.getInput('recreate') == 'true'
   const assets = core
@@ -33,15 +32,19 @@ const main = async () => {
     .split(' ')
     .map((asset) => asset.split(':'))
 
-  let release = await getReleaseByTag(code)
+  console.log('🚀 ~ file: action.js ~ line 32 ~ main ~ assets', assets)
 
-  const isSameCommit = release && release.target_commitish === github.context.sha
+  let release = await getReleaseByTag(code)
+  console.log('🚀 ~ file: action.js ~ line 38 ~ main ~ release', release)
+
+  const isSameCommit =
+    release && release.target_commitish === github.context.sha
 
   if (recreate && !isSameCommit) {
     await deleteReleaseIfExists(code, release)
   }
 
-  if (!release || (recreate && !isSameCommit) ) {
+  if (!release || (recreate && !isSameCommit)) {
     const createRelease = await api.repos.createRelease({
       ...github.context.repo,
       tag_name: code,
@@ -56,6 +59,7 @@ const main = async () => {
 
   for (const [source, target, type] of assets) {
     const data = fs.readFileSync(source)
+    console.log('🚀 ~ file: action.js ~ line 62 ~ main ~ data', data)
     api.repos.uploadReleaseAsset({
       url: release.upload_url,
       headers: {

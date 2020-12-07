@@ -1,0 +1,24 @@
+{
+  "name": "create-release",
+  "version": "1.0.0",
+  "description": "Github Action for handling auto release creation",
+  "main": "action.js",
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jardenliu/create-release.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jardenliu/create-release/issues"
+  },
+  "homepage": "https://github.com/jardenliu/create-release#readme"
+}

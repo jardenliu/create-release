@@ -1,4 +1,4 @@
-# nodegui/create-release
+# Create-Release
 
 Github Action for handling auto release creation
 
