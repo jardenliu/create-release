@@ -1,4 +1,4 @@
-name: nodegui/create-release
+name: jardenliu/create-release
 description: |
   Github Action for handling release creation
 author: Atul and Piotr Majkrzak
@@ -13,13 +13,13 @@ inputs:
   code:
     required: true
   body:
-    default: ""
+    default: ''
   prerelease:
     default: false
   recreate:
     default: false
   assets:
-    defailt: ""
+    defailt: ''
 runs:
   using: node12
   main: action.js

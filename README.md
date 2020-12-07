@@ -5,7 +5,7 @@ Github Action for handling auto release creation
 ## Example
 
 ```yaml
-- uses: nodegui/create-release@master
+- uses: jardenliu/create-release@master
   with:
     token: ${{github.token}}
     name: My lovely release

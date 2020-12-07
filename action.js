@@ -1,9 +1,12 @@
+require('child_process').execSync('npm install @actions/core @actions/github', {
+  cwd: __dirname,
+})
+
 const fs = require('fs')
 const core = require('@actions/core')
 const github = require('@actions/github')
 // const api = new github.GitHub(core.getInput('token'))
 const api = github.getOctokit(core.getInput('token'))
-console.log('🚀 ~ file: action.js ~ line 6 ~ api', Object.keys(api))
 
 const getReleaseByTag = async (tag) => {
   let release
@@ -13,7 +16,7 @@ const getReleaseByTag = async (tag) => {
       tag,
     })
   } catch (err) {
-    console.log(err)
+    // console.log(err)
     console.log('Release not found.. moving to creation')
   }
   return release && release.data
@@ -32,16 +35,14 @@ const main = async () => {
     .split(' ')
     .map((asset) => asset.split(':'))
 
-  console.log('🚀 ~ file: action.js ~ line 32 ~ main ~ assets', assets)
-
   let release = await getReleaseByTag(code)
-  console.log('🚀 ~ file: action.js ~ line 38 ~ main ~ release', release)
 
   const isSameCommit =
     release && release.target_commitish === github.context.sha
 
   if (recreate && !isSameCommit) {
     await deleteReleaseIfExists(code, release)
+    delay(2000)
   }
 
   if (!release || (recreate && !isSameCommit)) {
@@ -54,12 +55,15 @@ const main = async () => {
       draft: false,
       prerelease: prerelease,
     })
+    console.log(
+      '🚀 ~ file: action.js ~ line 57 ~ main ~ createRelease',
+      createRelease.status
+    )
     release = createRelease.data
   }
 
   for (const [source, target, type] of assets) {
     const data = fs.readFileSync(source)
-    console.log('🚀 ~ file: action.js ~ line 62 ~ main ~ data', data)
     api.repos.uploadReleaseAsset({
       url: release.upload_url,
       headers: {
@@ -82,11 +86,17 @@ async function deleteReleaseIfExists(code, release) {
       release_id: release.id,
     })
 
-  const deleteTagRef = async () =>
-    api.git.deleteRef({
+  const deleteTagRef = async () => {
+    const delTag = await api.git.deleteRef({
       ...github.context.repo,
       ref: `tags/${code}`,
     })
+    console.log(
+      '🚀 ~ file: action.js ~ line 93 ~ deleteTagRef ~ delTag',
+      delTag.status
+    )
+    return delTag
+  }
 
   await retryOnFail(deleteRelease, 3)
   await retryOnFail(deleteTagRef, 3)
